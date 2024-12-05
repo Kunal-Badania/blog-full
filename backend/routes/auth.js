@@ -40,7 +40,14 @@ router.post("/login",async (req,res)=>{
         const token=jwt.sign({_id:user._id,username:user.username,email:user.email},process.env.SECRET,{expiresIn:"3d"})
         
         const {password,...info}=user._doc
-        res.cookie("token",token).status(200).json(info)
+        res.cookie("token", token, {
+  httpOnly: true, // Ensures the cookie is not accessible via JavaScript
+  secure: true,   // Ensures the cookie is only sent over HTTPS
+  sameSite: "None", // Allows the cookie to be sent with cross-site requests
+})
+.status(200)
+.json(info);
+
 
     }
     catch(err){
